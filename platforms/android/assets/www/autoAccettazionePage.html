@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>PETPASS</title>
+
+       <link href="css/PetPass.css" rel="stylesheet">  
+        <script src="js/petpass.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet"> 
+         <script src="js/jquery.js"></script>  
+        <script src="js/jquery.mobile-1.4.5.js"></script>  
+        <script src="cordova.js"></script>  
+        <style>
+            
+
+            .full-height {
+                height: 100vh;
+            }
+
+            .flex-center {
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
+
+            .position-ref {
+                position: relative;
+            }
+
+            .top-right {
+                position: absolute;
+                right: 10px;
+                top: 18px;
+            }
+
+            .content {
+                text-align: center;
+                
+                margin-top: 10%;
+            }
+
+            .title {
+                font-size: 84px;
+            }
+
+            .links > a {
+                color: #636b6f;
+                padding: 0 25px;
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+
+            .m-b-md {
+                margin-bottom: 30px;
+            }
+            
+            
+        </style>
+        <script type="text/javascript">
+
+
+    
+
+        
+
+        function callAutoAccettazionePETPASS(){
+        	input = $('#nomeAnimale').val();
+
+        	$.ajax({
+                url: indirizzoPETPASS+"AppAutoaccettazioneJSON?input="+input,
+                type:"GET",
+                 xhrFields: {
+                	    // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
+                	    // This can be used to set the 'withCredentials' property.
+                	    // Set the value to 'true' if you'd like to pass cookies to the server.
+                	    // If this is enabled, your server must respond with the header
+                	    // 'Access-Control-Allow-Credentials: true'.
+                	    withCredentials: false
+                	  },
+                	  datatype : "application/json",
+                	  headers: {
+                	    // Set any custom headers here.
+                	    // If you set any non-simple headers, your server must include these
+                	    // headers in the 'Access-Control-Allow-Headers' response header.
+                	  },
+                success: function(data) {
+                	if(data==1){
+                    	
+                		localStorage.nomeAnimale = input;
+                		window.location.href='accettazioneResult.html';
+                    }else{
+                     	if(data==0){
+                         	alert('Attenzione Prenotazione non trovata');
+                     	}
+                     	else{
+                     		localStorage.setItem('records', JSON.stringify(data));
+                     		var retrievedObject = localStorage.getItem('records');
+                     		console.log('retrievedObject: ', JSON.parse(retrievedObject));
+                     		window.location.href='autoAccettazioneMultipla.html';
+                     	}
+                    }
+                }
+            });
+            }
+        </script>
+    </head>
+    <body>
+    <div class="contentTop">
+             </div>
+             <div class="contentBottom">
+                <div class="titolo">
+                   <font class="fontBigBlu">ACCETTAZIONE</font>
+                </div>
+               	<div class="infoLabel"><font class="fontNormalGrey">SE HAI PRESO UN APPUNTAMENTO</font></div>
+               	<div class="infoLabel"><font class="fontNormalGrey">INSERISCI IL NOME DEL TUO ANIMALE</font></div>
+          		
+          		<div class="inputNomeAnimale"> 
+                	<input class="inputNome form-control input-lg" placeholder="nome" maxlength="16" type="text" name="nomeAnimale" id="nomeAnimale">
+                </div>
+               
+                <div class="containerConfirm" >
+                 	<div class="divConfirmButton">
+                 	<button  class="buttonConferma" onclick="window.location.href='totemIfAppuntamento.html'" id="buttonConfirm" >INDIETRO</button>
+                		<button  class="buttonConferma" onclick="callAutoAccettazionePETPASS()" id="buttonConfirm" >CONFERMA</button>
+                		</div>
+                </div>
+                <div class="footer">
+                <div class="bottomBar">
+                	<div class="lineBottom">&nbsp;</div>
+                	<div class="logo"><a href="totemIndex"><img class="imgLogoBottom" src="img/logo.png"></a></div>
+                </div>
+                </div>
+                </div>
+            </div>
+    </body>
+</html>

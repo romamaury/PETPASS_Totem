@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>PETPASS</title>
+   		<link href="css/PetPass.css" rel="stylesheet">  
+        <link href="css/bootstrap.min.css" rel="stylesheet">  
+        <link href="css/font-awesome.min.css" rel="stylesheet">  
+        <script src="js/petpass.js"></script>
+       	<script src="js/jquery.js"></script> 
+        <script src="js/jquery.mobile-1.4.5.js"></script> 
+        <script src="cordova.js"></script>  
+        <style>
+
+            .full-height {
+                height: 100vh;
+            }
+
+            .flex-center {
+                align-items: center;
+                display: flex;
+                justify-content: center;
+            }
+
+            .position-ref {
+                position: relative;
+            }
+
+            .top-right {
+                position: absolute;
+                right: 10px;
+                top: 18px;
+            }
+
+            .content {
+                text-align: center;                
+                margin-top: 10%;
+            }
+
+            .title {
+                font-size: 84px;
+            }
+
+            .links > a {
+                color: #636b6f;
+                padding: 0 25px;
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+            
+            .tdMiddle{
+            vertical-align: inherit !important ;
+            font-size: 20px;
+            }
+
+            .m-b-md {
+                margin-bottom: 30px;
+            }
+            
+            
+        </style>
+        <script>
+          document.addEventListener("deviceready", onDeviceReady, false);
+            
+        function onDeviceReady() {
+            //alert(localStorage.multipleResult);
+          	var retrievedObject = localStorage.getItem('records');
+            record=JSON.parse(retrievedObject);
+            
+            var htmlTable="<table class='table' id='tableRecord'>";
+            for(i=0;i<record.length;i++)
+        		{   	
+            	console.log("RECORD:"+i);
+            	console.log(record[i]);
+            	htmlTable+='<tr>'+
+             	  '<td class="tdMiddle">'+
+	               	   +record[i]['nomeAnimale']+
+	              '</td>'+
+             	  '<td class="tdMiddle">'+
+	                +record[i]['desc_spcecie']+
+	              '</td>'+
+	              ' <td class="tdMiddle">'+
+	                +record[i]['desc_razza']+
+	              '</td>'+
+	              '  <td class="tdMiddle">'+(record[i]['desc_razza'])+
+	               <!-- {{ Carbon\Carbon::parse(date('Y'))->format('Y') - Carbon\Carbon::parse($record->dataNascita)->format('Y')}}&nbsp;anni -->
+	              '</td>'+
+	              '  <td class="tdMiddle">'+
+	              ' <button type="submit" class="btn" value="Seleziona" onclick="seleziona('+record[i]['ID_Prenotazione']+');"><input type="hidden" value="'+record[i]['nomeAnimale']+'" id="nomePre'+record[i]['ID_Prenotazione']+'" ><img id="selectID'+record[i]['ID_Prenotazione']+'" src="img/checkNoSelect.png"></button>'+
+	              '</td>'+
+            '</tr>';
+        		}
+            htmlTable+="</table>"
+        	$('#listaMultipla').append(htmlTable);
+         }
+
+        var idSelected=0;
+
+        function seleziona(id){
+            
+             	$("#selectID"+id).attr("src","img/checkSelect.png");
+        			$("#selectID"+idSelected).attr("src","img/checkNoSelect.png");
+        		idSelected = id;
+        	
+            }
+
+        function conferma(){
+            
+            if(idSelected==0){
+                showMessage('Seleziona la tua prenotazione');
+            return;
+            }
+
+            nomeAnimale= $('#nomePre'+idSelected).val();
+
+         	$.ajax({
+                url: indirizzoPETPASS+"AppAutoaccettazioneJSON?input="+nomeAnimale+"&idPrenotazione="+idSelected,
+                type:"GET",
+                 xhrFields: {
+                	    withCredentials: false
+                	  },
+                	  datatype : "application/json",
+                	  headers: {
+                	  },
+                success: function(data) {
+                    
+                		localStorage.nomeAnimale =nomeAnimale;
+                		window.location.href='accettazioneResult.html';
+            
+                }
+            });
+            
+            }
+        </script>
+    </head>
+    <body>
+    
+     <div class="contentTop">
+             </div>
+             <div class="contentBottom">
+                <div class="titleLabel">
+                   <font class="fontBigBlu">ACCETTAZIONE</font>
+                </div>
+                <div class="infoLabel"><font class="fontNormalGrey">ABBIAMO TROVATO PIù PRENOTAZIONI<BR>CON QUESTO NOME.<BR>SELEZIONA LA TUA PRENOTAZIONE</font></div>
+                
+                <div class="listiMultipla" style="margin-bottom:300px;" id="listaMultipla">
+                
+               
+                </div>  
+                 <div class="containerConfirm" >
+                 	<div class="divConfirmButton">
+                 	<button  class="buttonConferma" id="buttonConfirm" >INDIETRO</button>
+                		<button  class="buttonConferma" onclick="conferma()" id="buttonConfirm" >CONFERMA</button>
+                		</div>
+                </div>
+                <div class="footer">
+                <div class="bottomBar">
+                	<div class="lineBottom">&nbsp;</div>
+                	<div class="logo"><a href="totemIndex"><img class="imgLogoBottom" src="img/logo.png"></a></div>
+                </div>
+                        </div>
+             </div>
+</body>
+</html>
